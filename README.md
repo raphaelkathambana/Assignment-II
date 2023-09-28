@@ -31,4 +31,13 @@ You will use a version control application (like GitHub). Invite your instructor
 
 Share your GitHub repository link for this assignment here.
 
+***Set Up***
+---
+Ensure you have [Composer](https://getcomposer.org/) Installed
+Run the command `composer install` to install the required packages.
+
+***Database***
+---
+Use the [db.sql](db.sql) file to create the database.
+
 </aside>
