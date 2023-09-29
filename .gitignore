@@ -2,3 +2,4 @@
 .ENV
 vendor/
 *.lock
+scss/

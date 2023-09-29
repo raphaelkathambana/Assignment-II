@@ -11,13 +11,13 @@ $layout->navbar();
         echo "<p>{$_GET['message']}</p>";
     }
         ?>
-    <form action="signIn.php" method="post" enctype="multipart/form-data">
-        <label for="email">Email:</label>
+    <form action="signIn.php" method="post" enctype="multipart/form-data" class='container'>
+        <label class="heading-tertiary" for="email">Email:</label>
         <input type="email" id="email" name="email" required><br><br>
-        <label for="password">Password:</label>
+        <label class="heading-tertiary" for="password">Password:</label>
         <input type="password" id="password" name="password" required>
-        <input type="checkbox" id="show-password" onclick="togglePassword()"> Show Password<br><br>
-        <input type="submit" value="Login" name='login'>
+        <input class="heading-tertiary" type="checkbox" id="show-password" onclick="togglePassword()"> Show Password<br><br>
+        <input type="submit" value="Login" name='login' class='btn'>
     </form>
     <script>
         function togglePassword() {
