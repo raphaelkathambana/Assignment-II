@@ -48,6 +48,8 @@ class User
         $stmt->bindParam(':created_at', $this->created_at);
         $stmt->bindParam(':updated_at', $this->updated_at);
 
+        $this->setId($this->getIdFromDb());
+
         return $stmt->execute();
     }
 
@@ -65,6 +67,19 @@ class User
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'User');
+    }
+
+    public function getIdFromDb()
+    {
+        $sql = "SELECT id FROM users WHERE email = :email;";
+
+        $stmt = Connection::getInstance()->connect()->prepare($sql);
+
+        $stmt->bindParam(':email', $this->email);
+
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
     }
 
     //getters and setters
