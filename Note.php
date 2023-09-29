@@ -44,13 +44,16 @@ class Note
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Note');
     }
 
-    public function save($title, $note)
+    public function save($title, $note, $id)
     {
-        $query = "INSERT INTO `posts` (title, body) VALUES (:title, :body);";
-        $params = array(
+        $query = "INSERT INTO posts (user_id, title, body, created_at, updated_at) VALUES ( :id, :title, :body, :created_at, :updated_at);";
+        $params = [
+            ':id' => $id,
             ':title' => $title,
-            ':body' => $note
-        );
+            ':body' => $note,
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
         $stmt = Connection::getInstance()->connect()->prepare($query);
         return $stmt->execute($params);
     }
@@ -70,6 +73,17 @@ class Note
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         return $stmt->fetchObject('Note');
+    }
+
+    public function update($title, $note, $id) {
+        $query = "UPDATE `posts` SET `body` = :body, `title` = :title WHERE `id` = :id;;";
+        $params = [
+            ':title' => $title,
+            ':body' => $note,
+            ':id' => $id
+        ];
+        $stmt = Connection::getInstance()->connect()->prepare($query);
+        return $stmt->execute($params);
     }
 
     //getters and setters
