@@ -38,7 +38,6 @@ class Layout
                 <a href="login.php">Login</a>
                 <a href="register.php">Register</a>
             <?php } ?>
-            <a href="test.php">Testing Area</a>
         </div><br />
         <?php
     }
