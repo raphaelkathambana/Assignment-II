@@ -46,16 +46,33 @@ class Note
 
     public function save($title, $note, $id)
     {
+        $this->title = $title;
+        $this->body = $note;
+        $this->user_id = $id;
+        $this->created_at = date('Y-m-d H:i:s');
+        $this->updated_at = date('Y-m-d H:i:s');
+
         $query = "INSERT INTO posts (user_id, title, body, created_at, updated_at) VALUES ( :id, :title, :body, :created_at, :updated_at);";
-        $params = [
-            ':id' => $id,
-            ':title' => $title,
-            ':body' => $note,
-            ':created_at' => date('Y-m-d H:i:s'),
-            ':updated_at' => date('Y-m-d H:i:s')
-        ];
+
         $stmt = Connection::getInstance()->connect()->prepare($query);
-        return $stmt->execute($params);
+
+        $stmt->bindParam(':id', $this->user_id);
+        $stmt->bindParam(':title', $this->title);
+        $stmt->bindParam(':body', $this->body);
+        $stmt->bindParam(':created_at', $this->created_at);
+        $stmt->bindParam(':updated_at', $this->updated_at);
+
+        return $stmt->execute();
+    }
+
+    public function getIdFromDb()
+    {
+        $sql = "SELECT id FROM `posts` WHERE title = :title AND body = :body;";
+        $stmt = Connection::getInstance()->connect()->prepare($sql);
+        $stmt->bindValue(':title', $this->title);
+        $stmt->bindValue(':body', $this->body);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 
     public function delete($id)
@@ -65,6 +82,8 @@ class Note
         $stmt->bindValue(':id', $id);
         return $stmt->execute();
     }
+
+
 
     public function getNoteById($id)
     {
