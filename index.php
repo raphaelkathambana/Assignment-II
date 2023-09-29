@@ -51,9 +51,11 @@ $layout->navbar();
             //check if there are any notes
             if ($notes) {
                 //display notes
+                $count = 0;
                 foreach ($notes as $note) {
                     $aNote = new Note($note->getId(), $note->getTitle(), $note->getBody(), $note->getUserId(), $note->getCreatedAt(), $note->getUpdatedAt());
                     if ($aNote->getUserId() == $_SESSION['user']->getId()) {
+                        $count++;
                         echo /*html*/"<h3>{$note->getTitle()}</h3>";
                         echo /*html*/"<p>{$note->getBody()}</p>";
                         echo /*html*/"<p>{$note->getCreatedAt()}</p>";
@@ -62,13 +64,16 @@ $layout->navbar();
                         echo /*html*/"<br>";
                         echo /*html*/"<a href='index.php?update_id={$note->getId()}'>Update</a>";
                     } else {
-                        echo /*html*/"<h3>You have no Notes Yes</h3>";
+                        if ($count > 0) {
+                            echo /*html*/"<h3>You have No More Notes.</h3>";
+                            break;
+                        } else {
+                            echo /*html*/"<h3>You have No Notes Yet.</h3>";
+                            break;
+                        }
                     }
                 }
-            } else {
-                echo /*html*/"<p>No notes</p>";
-            }
-            ?>
+            } ?>
         </div>
     <?php endif;
         ?>
