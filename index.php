@@ -1,42 +1,9 @@
 <?php
-    include_once 'Note.php';
-    require_once 'autoload.php';
-    //check if form was submitted
-    if (isset($_POST['save-note'])) {
-        //get form data
-        $title = $_POST['title'];
-        $note = $_POST['note'];
-        //create note object
-        $note = new Note();
-        //save note
-        $result = $note->save($title, $note);
-        //check if note was saved
-        if ($result) {
-            //redirect to index with query string
-            header('Location: index.php?message=Note saved');
-        } else {
-            //redirect to index with query string
-            header('Location: index.php?message=Note not saved');
-        }
-    }
-    //check if delete id was passed
-    if (isset($_GET['delete_id'])) {
-        //get note id
-        $id = $_GET['delete_id'];
-        //create note object
-        $note = new Note();
-        //delete note
-        $result = $note->delete($id);
-        //check if note was deleted
-        if ($result) {
-            //redirect to index with query string
-            header('Location: index.php?message=Note deleted');
-        } else {
-            //redirect to index with query string
-            header('Location: index.php?message=Note not deleted');
-        }
-    }
+include_once 'Note.php';
+require_once 'autoload.php';
+session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,39 +14,83 @@
 </head>
 
 <body>
-    <h1>Notes App</h1>
-    <form action="notes.php" method="post" enctype="multipart/form">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title">
-        <label for="note">Note</label>
-        <textarea name="note" id="note" cols="30" rows="10"></textarea>
-        <input type="submit" value="Save" name="save-note">
-        <?php
-            if (isset($_GET['message'])) {
-                echo "<p>{$_GET['message']}</p>";
-            }
-        ?>
-    </form>
-
+    <a href="/" style="text-decoration: none; color: #000;">
+        <h1>Notes App</h1>
+    </a>
     <div>
-        <h1>Previous Notes</h1>
         <?php
+        if (isset($_SESSION['user'])) { ?>
+            <a href='profile.php'>
+                <?php echo $_SESSION['user']->getName(); ?>
+                <?php echo $_SESSION['user']->getId(); ?>
+            </a>
+            <a href='logout.php'>Logout</a>
+        <?php } else { ?>
+            <a href="login.php">Login</a>
+            <a href="register.php">Register</a>
+        <?php } ?>
+        <a href="test.php">Testing Area</a>
+    </div><br />
+    <div>
+        <?php
+        if (isset($_SESSION['user'])) : ?>
+            <form action="notes.php" method="post" enctype="multipart/form">
+                <?php
+                if (isset($_GET['update_id'])) {
+                    $id = $_GET['update_id'];
+                    $note = new Note();
+                    $result = $note->getNoteById($id);
+                    if ($result) {
+                        $note = new Note($result->getId(), $result->getTitle(), $result->getBody(), $result->getUserId(), $result->getCreatedAt(), $result->getUpdatedAt());
+                        echo /*html*/"<input type='hidden' name='id' id='id' value='{$note->getId()}'>";
+                        echo /*html*/"<label for='title'>Title</label>";
+                        echo /*html*/"<input type='text' name='title' id='title' value='{$note->getTitle()}'>";
+                        echo /*html*/"<label for='note'>Note</label>";
+                        echo /*html*/"<textarea name='note' id='note' cols='30' rows='10'>{$note->getBody()}</textarea>";
+                        echo /*html*/"<input type='submit' value='Update' name='update-note'>";
+                    }
+                } else { ?>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title">
+                    <label for="note">Note</label>
+                    <textarea name="note" id="note" cols="30" rows="10"></textarea>
+                    <input type="hidden" name="id" id='id' value="<?php echo $_SESSION['user']->getId(); ?>">
+                    <input type="submit" value="Save" name="save-note">
+                    <?php
+                }
+                if (isset($_GET['message'])) {
+                    echo "<p>{$_GET['message']}</p>";
+                }
+                ?>
+            </form>
+        </div>
+
+
+        <div>
+            <h1>Past Notes</h1>
+            <?php
             //get notes from database
             $note = new Note();
-            $notes = $note->getNotes();
+            $notes = $note->getNoteObjects();
             //check if there are any notes
             if ($notes) {
                 //display notes
                 foreach ($notes as $note) {
-                    echo /*html*/"<h3>{$note['title']}</h3>";
-                    echo /*html*/"<p>{$note['body']}</p>";
-                    echo /*html*/"<p>{$note['created_at']}</p>";
-                    echo /*html*/"<a href='notes.php?delete_id={$note['id']}'>Delete</a>";
+                    $aNote = new Note($note->getId(), $note->getTitle(), $note->getBody(), $note->getUserId(), $note->getCreatedAt(), $note->getUpdatedAt());
+                    echo /*html*/"<h3>{$note->getTitle()}</h3>";
+                    echo /*html*/"<p>{$note->getBody()}</p>";
+                    echo /*html*/"<p>{$note->getCreatedAt()}</p>";
+                    echo /*html*/"<p>{$note->getUserId()}</p>";
+                    echo /*html*/"<a href='notes.php?delete_id={$note->getId()}'>Delete</a>";
+                    echo /*html*/"<br>";
+                    echo /*html*/"<a href='index.php?update_id={$note->getId()}'>Update</a>";
                 }
             } else {
                 echo "<p>No notes</p>";
             }
+            ?>
+        </div>
+    <?php endif;
         ?>
-    </div>
 </body>
 </html>
