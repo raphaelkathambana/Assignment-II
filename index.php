@@ -2,35 +2,11 @@
 include_once 'Note.php';
 require_once 'autoload.php';
 session_start();
+$layout = new Layout();
+$layout->header('Notes App');
+$layout->navbar();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes App</title>
-</head>
-
-<body>
-    <a href="/" style="text-decoration: none; color: #000;">
-        <h1>Notes App</h1>
-    </a>
-    <div>
-        <?php
-        if (isset($_SESSION['user'])) { ?>
-            <a href='profile.php'>
-                <?php echo $_SESSION['user']->getName(); ?>
-                <?php echo $_SESSION['user']->getId(); ?>
-            </a>
-            <a href='logout.php'>Logout</a>
-        <?php } else { ?>
-            <a href="login.php">Login</a>
-            <a href="register.php">Register</a>
-        <?php } ?>
-        <a href="test.php">Testing Area</a>
-    </div><br />
     <div>
         <?php
         if (isset($_SESSION['user'])) : ?>
@@ -77,16 +53,20 @@ session_start();
                 //display notes
                 foreach ($notes as $note) {
                     $aNote = new Note($note->getId(), $note->getTitle(), $note->getBody(), $note->getUserId(), $note->getCreatedAt(), $note->getUpdatedAt());
-                    echo /*html*/"<h3>{$note->getTitle()}</h3>";
-                    echo /*html*/"<p>{$note->getBody()}</p>";
-                    echo /*html*/"<p>{$note->getCreatedAt()}</p>";
-                    echo /*html*/"<p>{$note->getUserId()}</p>";
-                    echo /*html*/"<a href='notes.php?delete_id={$note->getId()}'>Delete</a>";
-                    echo /*html*/"<br>";
-                    echo /*html*/"<a href='index.php?update_id={$note->getId()}'>Update</a>";
+                    if ($aNote->getUserId() == $_SESSION['user']->getId()) {
+                        echo /*html*/"<h3>{$note->getTitle()}</h3>";
+                        echo /*html*/"<p>{$note->getBody()}</p>";
+                        echo /*html*/"<p>{$note->getCreatedAt()}</p>";
+                        echo /*html*/"<p>{$note->getUserId()}</p>";
+                        echo /*html*/"<a href='notes.php?delete_id={$note->getId()}'>Delete</a>";
+                        echo /*html*/"<br>";
+                        echo /*html*/"<a href='index.php?update_id={$note->getId()}'>Update</a>";
+                    } else {
+                        echo /*html*/"<h3>You have no Notes Yes</h3>";
+                    }
                 }
             } else {
-                echo "<p>No notes</p>";
+                echo /*html*/"<p>No notes</p>";
             }
             ?>
         </div>

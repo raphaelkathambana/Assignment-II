@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
-<body>
+<?php
+require_once 'autoload.php';
+session_start();
+$layout = new Layout();
+$layout->header('Register');
+$layout->navbar();
+?>
     <h1>Sign Up</h1>
     <form method="post" action="signUp.php" enctype="multipart/form-data">
         <label for="username">Username:</label>

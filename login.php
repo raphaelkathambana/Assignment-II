@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-
-<body>
-    <h1>Enter Your Details Below</h1>
+<?php
+require_once 'autoload.php';
+session_start();
+$layout = new Layout();
+$layout->header('Login');
+$layout->navbar();
+?>
+<h1>Enter Your Details Below</h1>
     <?php
     if (isset($_GET['message'])) {
         echo "<p>{$_GET['message']}</p>";
