@@ -16,6 +16,7 @@ if (isset($_POST['register'])) {
     //check if user was saved
     if ($result) {
         // create session
+        $user->setId($user->getIdFromDb());
         session_start();
         $_SESSION['user'] = $user;
         //redirect to index with query string
